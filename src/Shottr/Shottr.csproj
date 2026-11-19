@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>Shottr</AssemblyName>
+    <RootNamespace>Shottr</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\shottr.ico</ApplicationIcon>
+    <Version>0.1.0</Version>
+    <Product>Shottr</Product>
+    <!-- WPF0001: ThemeMode (Fluent light/dark theme) is still flagged as experimental.
+         WFO0003: WinForms (used only for the tray icon) prefers its own DPI setting, but this is a WPF app configured by app.manifest. -->
+    <NoWarn>$(NoWarn);WPF0001;WFO0003</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="Assets\shottr.ico" />
+    <None Remove="Assets\shottr-256.png;Assets\shottr-512.png" />
+  </ItemGroup>
+</Project>

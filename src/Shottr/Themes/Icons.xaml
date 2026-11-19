@@ -1,0 +1,27 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Line icons on a 24x24 grid, drawn with round caps by Controls.Icon. -->
+    <StreamGeometry x:Key="Icon.Select">M5.5,3.5 L5.5,19 L9.6,15.2 L12.4,21 L15,19.8 L12.3,14.2 L18,14 Z</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Rectangle">M5,5 H19 A2,2 0 0 1 21,7 V17 A2,2 0 0 1 19,19 H5 A2,2 0 0 1 3,17 V7 A2,2 0 0 1 5,5 Z</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Ellipse">M3,12 A9,7.5 0 1 0 21,12 A9,7.5 0 1 0 3,12 Z</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Arrow">M5.5,18.5 L18,6 M9.5,6 H18 V14.5</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Text">M5,7.5 V5 H19 V7.5 M9,19 H15 M12,5 V19</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Counter">M12,3 A9,9 0 1 0 12,21 A9,9 0 1 0 12,3 Z M10.2,9.6 L12.6,8 V16.2 M10.2,16.2 H15</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Obfuscate">M5,3 H19 A2,2 0 0 1 21,5 V19 A2,2 0 0 1 19,21 H5 A2,2 0 0 1 3,19 V5 A2,2 0 0 1 5,3 Z</StreamGeometry>
+    <StreamGeometry x:Key="Icon.ObfuscateFill">M6.5,6.5 H12 V12 H6.5 Z M12,12 H17.5 V17.5 H12 Z</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Copy">M10,8 H20 A2,2 0 0 1 22,10 V20 A2,2 0 0 1 20,22 H10 A2,2 0 0 1 8,20 V10 A2,2 0 0 1 10,8 Z M4,16 A2,2 0 0 1 2,14 V4 A2,2 0 0 1 4,2 H14 A2,2 0 0 1 16,4</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Save">M15.2,3 A2,2 0 0 1 16.6,3.6 L20.4,7.4 A2,2 0 0 1 21,8.8 V19 A2,2 0 0 1 19,21 H5 A2,2 0 0 1 3,19 V5 A2,2 0 0 1 5,3 Z M17,21 V14 A1,1 0 0 0 16,13 H8 A1,1 0 0 0 7,14 V21 M7,3 V7 A1,1 0 0 0 8,8 H15</StreamGeometry>
+    <StreamGeometry x:Key="Icon.SaveAs">M4,20 H20 A2,2 0 0 0 22,18 V8 A2,2 0 0 0 20,6 H12.1 A2,2 0 0 1 10.4,5.1 L9.6,3.9 A2,2 0 0 0 7.9,3 H4 A2,2 0 0 0 2,5 V18 A2,2 0 0 0 4,20 Z M12,10 V16 M9,13 L12,16 L15,13</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Folder">M4,20 H20 A2,2 0 0 0 22,18 V8 A2,2 0 0 0 20,6 H12.1 A2,2 0 0 1 10.4,5.1 L9.6,3.9 A2,2 0 0 0 7.9,3 H4 A2,2 0 0 0 2,5 V18 A2,2 0 0 0 4,20 Z</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Undo">M9,14 L4,9 L9,4 M4,9 H14.5 A5.5,5.5 0 0 1 14.5,20 H11</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Redo">M15,14 L20,9 L15,4 M20,9 H9.5 A5.5,5.5 0 0 0 9.5,20 H13</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Delete">M3,6 H21 M19,6 V20 A2,2 0 0 1 17,22 H7 A2,2 0 0 1 5,20 V6 M8,6 V4 A2,2 0 0 1 10,2 H14 A2,2 0 0 1 16,4 V6 M10,11 V17 M14,11 V17</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Settings">M3,7 H7 M11,7 H21 M3,17 H13 M17,17 H21 M9,5 A2,2 0 1 0 9,9 A2,2 0 1 0 9,5 Z M15,15 A2,2 0 1 0 15,19 A2,2 0 1 0 15,15 Z</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Fit">M8,3 H5 A2,2 0 0 0 3,5 V8 M21,8 V5 A2,2 0 0 0 19,3 H16 M3,16 V19 A2,2 0 0 0 5,21 H8 M16,21 H19 A2,2 0 0 0 21,19 V16</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Plus">M5,12 H19 M12,5 V19</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Minus">M5,12 H19</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Region">M8,3 H5 A2,2 0 0 0 3,5 V8 M21,8 V5 A2,2 0 0 0 19,3 H16 M3,16 V19 A2,2 0 0 0 5,21 H8 M16,21 H19 A2,2 0 0 0 21,19 V16 M8,12 H16 M12,8 V16</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Window">M5,4 H19 A2,2 0 0 1 21,6 V18 A2,2 0 0 1 19,20 H5 A2,2 0 0 1 3,18 V6 A2,2 0 0 1 5,4 Z M3,9 H21</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Monitor">M4,3 H20 A2,2 0 0 1 22,5 V15 A2,2 0 0 1 20,17 H4 A2,2 0 0 1 2,15 V5 A2,2 0 0 1 4,3 Z M8,21 H16 M12,17 V21</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Exit">M9,21 H5 A2,2 0 0 1 3,19 V5 A2,2 0 0 1 5,3 H9 M16,17 L21,12 L16,7 M21,12 H9</StreamGeometry>
+</ResourceDictionary>

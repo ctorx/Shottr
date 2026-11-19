@@ -1,0 +1,245 @@
+<Window x:Class="Shottr.Editor.EditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:Shottr.Controls"
+        Title="Shottr"
+        Width="1100" Height="760" MinWidth="820" MinHeight="480"
+        Icon="pack://application:,,,/Assets/shottr.ico"
+        WindowStartupLocation="CenterScreen"
+        UseLayoutRounding="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Header: edit actions on the left, file actions on the right. -->
+        <Border Grid.Row="0" Padding="12,8" BorderThickness="0,0,0,1"
+                BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+            <DockPanel MinHeight="44">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource CommandButton}" ToolTip="Save as… (Ctrl+Shift+S)" Click="SaveAs_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Data="{StaticResource Icon.SaveAs}" />
+                            <TextBlock Text="Save as" Margin="8,0,2,0" VerticalAlignment="Center" FontSize="14" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource CommandButton}" ToolTip="Save to your captures folder (Ctrl+S)" Click="Save_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Data="{StaticResource Icon.Save}" />
+                            <TextBlock Text="Save" Margin="8,0,2,0" VerticalAlignment="Center" FontSize="14" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource AccentCommandButton}" ToolTip="Copy to clipboard (Ctrl+C)" Click="Copy_Click" Margin="6,0,0,0">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Data="{StaticResource Icon.Copy}" />
+                            <TextBlock Text="Copy" Margin="8,0,2,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="pack://application:,,,/Assets/shottr.ico" Width="26" Height="26" Margin="6,0,14,0" />
+                    <Button x:Name="UndoButton" Style="{StaticResource CommandButton}" ToolTip="Undo (Ctrl+Z)" Click="Undo_Click">
+                        <c:Icon Data="{StaticResource Icon.Undo}" />
+                    </Button>
+                    <Button x:Name="RedoButton" Style="{StaticResource CommandButton}" ToolTip="Redo (Ctrl+Y)" Click="Redo_Click">
+                        <c:Icon Data="{StaticResource Icon.Redo}" />
+                    </Button>
+                    <Button x:Name="DeleteButton" Style="{StaticResource CommandButton}" ToolTip="Delete selected (Del)" Click="Delete_Click">
+                        <c:Icon Data="{StaticResource Icon.Delete}" />
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Options bar: shows only the settings for the active tool, like Photoshop's. -->
+        <Border Grid.Row="1" Padding="12,6" BorderThickness="0,0,0,1"
+                Background="{DynamicResource LayerFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+            <DockPanel MinHeight="44">
+                <StackPanel x:Name="OptionsPanel" Orientation="Horizontal" VerticalAlignment="Center" ClipToBounds="True">
+                    <TextBlock x:Name="ToolTitle" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" Margin="4,0,22,0" />
+
+                    <StackPanel x:Name="StrokeGroup" Style="{StaticResource OptionGroup}">
+                        <TextBlock x:Name="StrokeLabel" Text="Color" Style="{StaticResource OptionLabel}" />
+                        <c:ColorPicker x:Name="StrokePicker" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="FillGroup" Style="{StaticResource OptionGroup}">
+                        <TextBlock x:Name="FillLabel" Text="Fill" Style="{StaticResource OptionLabel}" />
+                        <c:ColorPicker x:Name="FillPicker" AllowTransparent="True" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="ThicknessGroup" Style="{StaticResource OptionGroup}">
+                        <TextBlock Text="Width" Style="{StaticResource OptionLabel}" />
+                        <Slider x:Name="ThicknessSlider" Width="120" Minimum="1" Maximum="20" SmallChange="1"
+                                IsSnapToTickEnabled="True" TickFrequency="1" Focusable="False" VerticalAlignment="Center" />
+                        <TextBlock x:Name="ThicknessValue" Style="{StaticResource OptionValue}" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="FontSizeGroup" Style="{StaticResource OptionGroup}">
+                        <TextBlock Text="Size" Style="{StaticResource OptionLabel}" />
+                        <Slider x:Name="FontSizeSlider" Width="120" Minimum="10" Maximum="96"
+                                IsSnapToTickEnabled="True" TickFrequency="1" Focusable="False" VerticalAlignment="Center" />
+                        <TextBlock x:Name="FontSizeValue" Style="{StaticResource OptionValue}" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="BoldGroup" Style="{StaticResource OptionGroup}">
+                        <ToggleButton x:Name="BoldToggle" Style="{StaticResource OptionToggleButton}" Focusable="False" ToolTip="Bold">
+                            <TextBlock Text="B" FontWeight="Bold" FontSize="15" />
+                        </ToggleButton>
+                    </StackPanel>
+
+                    <StackPanel x:Name="TextStyleGroup" Style="{StaticResource OptionGroup}">
+                        <TextBlock Text="Style" Style="{StaticResource OptionLabel}" />
+                        <Border Style="{StaticResource SegmentHost}">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton x:Name="StylePlain" GroupName="TextStyle" Content="Plain" Style="{StaticResource SegmentButton}" Focusable="False" />
+                                <RadioButton x:Name="StyleLabel" GroupName="TextStyle" Content="Label" Style="{StaticResource SegmentButton}" Focusable="False" />
+                                <RadioButton x:Name="StyleCallout" GroupName="TextStyle" Content="Bubble" Style="{StaticResource SegmentButton}" Focusable="False" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel x:Name="CounterSizeGroup" Style="{StaticResource OptionGroup}">
+                        <TextBlock Text="Size" Style="{StaticResource OptionLabel}" />
+                        <Slider x:Name="CounterSizeSlider" Width="140" Minimum="20" Maximum="120"
+                                IsSnapToTickEnabled="True" TickFrequency="2" Focusable="False" VerticalAlignment="Center" />
+                        <TextBlock x:Name="CounterSizeValue" Style="{StaticResource OptionValue}" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="ModeGroup" Style="{StaticResource OptionGroup}">
+                        <Border Style="{StaticResource SegmentHost}">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton x:Name="ModePixelate" GroupName="ObfuscateMode" Content="Pixelate" Style="{StaticResource SegmentButton}" Focusable="False" />
+                                <RadioButton x:Name="ModeBlur" GroupName="ObfuscateMode" Content="Blur" Style="{StaticResource SegmentButton}" Focusable="False" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel x:Name="StrengthGroup" Style="{StaticResource OptionGroup}">
+                        <TextBlock Text="Amount" Style="{StaticResource OptionLabel}" />
+                        <Slider x:Name="StrengthSlider" Width="160" Minimum="1" Maximum="100"
+                                IsSnapToTickEnabled="True" TickFrequency="1" Focusable="False" VerticalAlignment="Center" />
+                        <TextBlock x:Name="StrengthValue" Style="{StaticResource OptionValue}" />
+                    </StackPanel>
+
+                    <StackPanel x:Name="ArrowHeadsGroup" Style="{StaticResource OptionGroup}">
+                        <TextBlock Text="Heads" Style="{StaticResource OptionLabel}" />
+                        <Border Style="{StaticResource SegmentHost}">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton x:Name="HeadsEnd" GroupName="ArrowHeads" Content="End" Style="{StaticResource SegmentButton}" Focusable="False" />
+                                <RadioButton x:Name="HeadsBoth" GroupName="ArrowHeads" Content="Both" Style="{StaticResource SegmentButton}" Focusable="False" />
+                                <RadioButton x:Name="HeadsNone" GroupName="ArrowHeads" Content="Line" Style="{StaticResource SegmentButton}" Focusable="False" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel x:Name="ShadowGroup" Style="{StaticResource OptionGroup}">
+                        <CheckBox x:Name="ShadowCheck" Content="Shadow" Focusable="False" VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <TextBlock x:Name="SelectHint" Style="{StaticResource OptionLabel}"
+                               Text="Click a markup to select it. Drag to move it, or press Delete to remove it." />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Tool palette. -->
+            <Border Grid.Column="0" Padding="8" BorderThickness="0,0,1,0"
+                    BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+                <DockPanel>
+                    <Button DockPanel.Dock="Bottom" Style="{StaticResource CommandButton}" Width="48" Height="48" Margin="0"
+                            ToolTip="Settings" Click="Settings_Click">
+                        <c:Icon Data="{StaticResource Icon.Settings}" Size="24" />
+                    </Button>
+                    <StackPanel>
+                        <RadioButton x:Name="ToolSelect" GroupName="Tool" Style="{StaticResource ToolButton}" ToolTip="Select and move (V)">
+                            <c:Icon Data="{StaticResource Icon.Select}" Size="24" />
+                        </RadioButton>
+                        <RadioButton x:Name="ToolRectangle" GroupName="Tool" Style="{StaticResource ToolButton}" ToolTip="Rectangle (R) · hold Shift for a square">
+                            <c:Icon Data="{StaticResource Icon.Rectangle}" Size="24" />
+                        </RadioButton>
+                        <RadioButton x:Name="ToolEllipse" GroupName="Tool" Style="{StaticResource ToolButton}" ToolTip="Ellipse (E) · hold Shift for a circle">
+                            <c:Icon Data="{StaticResource Icon.Ellipse}" Size="24" />
+                        </RadioButton>
+                        <RadioButton x:Name="ToolArrow" GroupName="Tool" Style="{StaticResource ToolButton}" ToolTip="Arrow (A) · hold Shift to snap the angle">
+                            <c:Icon Data="{StaticResource Icon.Arrow}" Size="24" />
+                        </RadioButton>
+                        <RadioButton x:Name="ToolText" GroupName="Tool" Style="{StaticResource ToolButton}" ToolTip="Text (T)">
+                            <c:Icon Data="{StaticResource Icon.Text}" Size="24" />
+                        </RadioButton>
+                        <RadioButton x:Name="ToolCounter" GroupName="Tool" Style="{StaticResource ToolButton}" ToolTip="Counter (N)">
+                            <c:Icon Data="{StaticResource Icon.Counter}" Size="24" />
+                        </RadioButton>
+                        <RadioButton x:Name="ToolObfuscate" GroupName="Tool" Style="{StaticResource ToolButton}" ToolTip="Obfuscate (O)">
+                            <c:Icon Data="{StaticResource Icon.Obfuscate}" FillData="{StaticResource Icon.ObfuscateFill}" Size="24" />
+                        </RadioButton>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Canvas area. -->
+            <Grid Grid.Column="1" Background="{DynamicResource SolidBackgroundFillColorBaseBrush}">
+                <ScrollViewer x:Name="Scroller" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                              Focusable="False" PreviewMouseWheel="Scroller_PreviewMouseWheel">
+                    <Grid x:Name="CanvasHost" Margin="32" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <!-- The shadow sits on its own element so it never re-renders with the canvas. -->
+                        <Border x:Name="CanvasShadow" Background="Transparent" />
+                    </Grid>
+                </ScrollViewer>
+
+                <Border x:Name="Toast" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,24"
+                        CornerRadius="8" Padding="16,10" BorderThickness="1" Opacity="0" Visibility="Collapsed"
+                        Background="{DynamicResource SolidBackgroundFillColorTertiaryBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="16" ShadowDepth="3" Direction="270" Opacity="0.25" />
+                    </Border.Effect>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="ToastText" VerticalAlignment="Center" FontSize="14"
+                                   Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                        <TextBlock x:Name="ToastLink" Margin="14,0,0,0" VerticalAlignment="Center" FontSize="14">
+                            <Hyperlink Click="ShowInFolder_Click">Show in folder</Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- Status bar. -->
+        <Border Grid.Row="3" Padding="14,4" BorderThickness="0,1,0,0"
+                BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
+            <DockPanel Height="32">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Style="{StaticResource CommandButton}" Height="30" MinWidth="30" Padding="4,0" ToolTip="Zoom out (Ctrl+-)" Click="ZoomOut_Click">
+                        <c:Icon Data="{StaticResource Icon.Minus}" Size="16" />
+                    </Button>
+                    <TextBlock x:Name="ZoomText" Width="52" TextAlignment="Center" VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
+                    <Button Style="{StaticResource CommandButton}" Height="30" MinWidth="30" Padding="4,0" ToolTip="Zoom in (Ctrl++)" Click="ZoomIn_Click">
+                        <c:Icon Data="{StaticResource Icon.Plus}" Size="16" />
+                    </Button>
+                    <Button Style="{StaticResource CommandButton}" Height="30" Padding="8,0" ToolTip="Fit to window (Ctrl+0)" Click="ZoomFit_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <c:Icon Data="{StaticResource Icon.Fit}" Size="16" />
+                            <TextBlock Text="Fit" Margin="6,0,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource CommandButton}" Height="30" Padding="8,0" ToolTip="Actual size (Ctrl+1)" Click="ZoomActual_Click">
+                        <TextBlock Text="100%" VerticalAlignment="Center" />
+                    </Button>
+                </StackPanel>
+                <TextBlock x:Name="SizeText" VerticalAlignment="Center" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>
