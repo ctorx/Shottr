@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using Shottr.Capture;
 using Shottr.Core;
 using Shottr.Settings;
+using Shottr.Update;
 
 namespace Shottr;
 
@@ -18,7 +19,14 @@ namespace Shottr;
 /// </summary>
 public partial class App : Application
 {
+    /// <summary>
+    /// Passed to the new copy after a self-update, followed by the version it replaced. The
+    /// new copy waits for the old one to exit before it takes the single-instance lock.
+    /// </summary>
+    public const string UpdatedFromArg = "--updated-from";
+
     private Mutex? _singleInstance;
+    private bool _ownsSingleInstance;
     private HotkeyManager? _hotkeys;
     private TrayIcon? _tray;
     private SettingsWindow? _settingsWindow;
@@ -27,14 +35,20 @@ public partial class App : Application
 
     internal CaptureService Capture { get; private set; } = null!;
 
+    internal UpdateController Updates { get; private set; } = null!;
+
     protected override void OnStartup(StartupEventArgs e)
     {
+        string? updatedFrom = ArgValue(e.Args, UpdatedFromArg);
         _singleInstance = new Mutex(true, "Shottr.SingleInstance.5B1E7C2A", out bool isFirst);
+        if (!isFirst && updatedFrom != null)
+            isFirst = WaitForPreviousInstance(_singleInstance);
         if (!isFirst)
         {
             Shutdown();
             return;
         }
+        _ownsSingleInstance = true;
 
         base.OnStartup(e);
         DispatcherUnhandledException += OnUnhandledException;
@@ -47,6 +61,8 @@ public partial class App : Application
         Capture = new CaptureService(Settings);
         _hotkeys = new HotkeyManager();
         _tray = new TrayIcon(this);
+        Updates = new UpdateController(this, _tray);
+        Updater.CleanUpAfterUpdate();
         ThemeHelper.WatchThemeChanges(this);
 
         List<string> failed = RegisterHotkeys();
@@ -56,6 +72,10 @@ public partial class App : Application
                 ? " Windows is using Print Screen to open Snipping Tool. You can turn that off in Shottr settings."
                 : " Another app is using them. You can pick different keys in Shottr settings.";
             _tray.ShowBalloon("Some shortcuts are unavailable", string.Join(", ", failed) + "." + hint);
+        }
+        else if (updatedFrom != null)
+        {
+            _tray.ShowBalloon("Shottr was updated", $"You now have version {Updater.CurrentVersion}. You had {UpdateCore.StripVersionPrefix(updatedFrom)}.");
         }
         else if (!File.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Shottr", "settings.json")))
         {
@@ -69,8 +89,52 @@ public partial class App : Application
             Capture.CaptureFullScreen();
         else if (e.Args.Contains("--settings"))
             ShowSettings();
-        else if (Array.IndexOf(e.Args, "--open") is int i and >= 0 && i + 1 < e.Args.Length)
-            Capture.OpenFile(e.Args[i + 1]);
+        else
+            OpenFilesFromArgs(e.Args);
+
+        Updates.StartAutomaticCheck();
+    }
+
+    /// <summary>Opens every image named by an "--open &lt;path&gt;" pair, such as editors reopened after an update.</summary>
+    private void OpenFilesFromArgs(string[] args)
+    {
+        for (int i = 0; i + 1 < args.Length; i++)
+        {
+            if (args[i] != "--open")
+                continue;
+            string path = args[++i];
+            try
+            {
+                Capture.OpenFile(path);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or NotSupportedException or UriFormatException)
+            {
+                _tray?.ShowBalloon("Shottr could not open an image", $"{Path.GetFileName(path)}: {ex.Message}");
+            }
+        }
+    }
+
+    private static string? ArgValue(string[] args, string name)
+    {
+        int i = Array.IndexOf(args, name);
+        return i >= 0 && i + 1 < args.Length ? args[i + 1] : null;
+    }
+
+    /// <summary>
+    /// After an update, the old copy starts the new one and then exits. This waits up to
+    /// 15 seconds for the old copy to release the single-instance lock.
+    /// </summary>
+    private static bool WaitForPreviousInstance(Mutex mutex)
+    {
+        try
+        {
+            return mutex.WaitOne(TimeSpan.FromSeconds(15));
+        }
+        catch (AbandonedMutexException)
+        {
+            // The old copy exited without releasing the lock, and this thread now owns it.
+            return true;
+        }
     }
 
     /// <summary>Registers the three capture hotkeys. Returns the names of any that failed.</summary>
@@ -114,6 +178,7 @@ public partial class App : Application
 
     public void ExitApp()
     {
+        Updates?.Dispose();
         Settings.Save();
         _hotkeys?.Dispose();
         _tray?.Dispose();
@@ -122,8 +187,21 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
+        Updates?.Dispose();
         _tray?.Dispose();
         _hotkeys?.Dispose();
+        // Releasing the lock right away lets a copy started by a self-update take over sooner.
+        if (_ownsSingleInstance)
+        {
+            try
+            {
+                _singleInstance?.ReleaseMutex();
+            }
+            catch (ApplicationException)
+            {
+                // Not owned by this thread. Process exit releases it anyway.
+            }
+        }
         _singleInstance?.Dispose();
         base.OnExit(e);
     }

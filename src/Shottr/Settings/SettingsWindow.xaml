@@ -141,6 +141,22 @@
                     <CheckBox x:Name="StartupCheck" Content="Start Shottr when I sign in to Windows" Margin="0,6,0,0" />
                 </StackPanel>
             </Border>
+
+            <TextBlock Text="Updates" Style="{StaticResource SectionTitle}" />
+            <Border Style="{StaticResource Card}">
+                <StackPanel>
+                    <Grid Margin="0,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="VersionText" Style="{StaticResource RowLabel}" />
+                        <Button x:Name="CheckUpdatesButton" Grid.Column="1" Content="Check for Updates…" MinWidth="150"
+                                Click="CheckUpdates_Click" />
+                    </Grid>
+                    <CheckBox x:Name="AutoUpdateCheck" Content="Check for updates automatically once a day" Margin="0,10,0,0" />
+                </StackPanel>
+            </Border>
         </StackPanel>
     </DockPanel>
 </Window>

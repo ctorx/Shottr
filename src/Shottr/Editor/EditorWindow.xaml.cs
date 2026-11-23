@@ -34,6 +34,15 @@ public partial class EditorWindow : Window
     private bool _syncingOptions;
     private string? _lastSavedPath;
 
+    /// <summary>
+    /// True until the image is saved, and again after any later edit. A new capture starts
+    /// unsaved. Copying to the clipboard does not count as saving.
+    /// </summary>
+    public bool HasUnsavedChanges { get; private set; } = true;
+
+    /// <summary>The file this image was last saved to, or null if it was never saved.</summary>
+    public string? SavedPath { get; private set; }
+
     public EditorWindow(BitmapSource image, AppSettings settings)
     {
         InitializeComponent();
@@ -50,7 +59,11 @@ public partial class EditorWindow : Window
         CanvasHost.LayoutTransform = _zoomTransform;
 
         _canvas.SelectionChanged += (_, _) => RefreshOptionsBar();
-        _canvas.Changed += (_, _) => UpdateCommandStates();
+        _canvas.Changed += (_, _) =>
+        {
+            HasUnsavedChanges = true;
+            UpdateCommandStates();
+        };
 
         _toolButtons = new Dictionary<ToolKind, RadioButton>
         {
@@ -370,18 +383,30 @@ public partial class EditorWindow : Window
         }
     }
 
-    private void QuickSave()
+    private void QuickSave() => SaveToCapturesFolder();
+
+    /// <summary>Saves to the captures folder. Returns false, after showing why, if the save failed.</summary>
+    public bool SaveToCapturesFolder()
     {
         try
         {
             string path = _settings.NextFilePath();
             ImageExport.Save(_canvas.RenderImage(), path, _settings);
+            MarkSaved(path);
             ShowToast($"Saved {Path.GetFileName(path)}", path);
+            return true;
         }
         catch (Exception ex)
         {
             ShowSaveError(ex, _settings.SaveFolder);
+            return false;
         }
+    }
+
+    private void MarkSaved(string path)
+    {
+        HasUnsavedChanges = false;
+        SavedPath = path;
     }
 
     /// <summary>
@@ -414,6 +439,7 @@ public partial class EditorWindow : Window
         try
         {
             ImageExport.Save(_canvas.RenderImage(), dialog.FileName, _settings);
+            MarkSaved(dialog.FileName);
             ShowToast($"Saved {Path.GetFileName(dialog.FileName)}", dialog.FileName);
         }
         catch (Exception ex)

@@ -41,6 +41,12 @@ public sealed class AppSettings
     public bool ShowMagnifier { get; set; } = true;
     public bool CloseEditorAfterCopy { get; set; }
 
+    /// <summary>Checks GitHub for a new release at startup, at most once a day.</summary>
+    public bool CheckForUpdatesAutomatically { get; set; } = true;
+
+    /// <summary>When the last update check finished, so the automatic check runs at most daily.</summary>
+    public DateTime? LastUpdateCheckUtc { get; set; }
+
     /// <summary>The last options used for each drawing tool, so they persist between sessions.</summary>
     public Dictionary<ToolKind, ToolOptions> ToolOptions { get; set; } = new();
 

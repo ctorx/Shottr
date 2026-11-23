@@ -10,7 +10,11 @@
     <RootNamespace>Shottr</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>Assets\shottr.ico</ApplicationIcon>
+    <!-- The single source of Shottr's version. The exe's file version, the version shown in
+         Settings, the update check and scripts/release.ps1 all read it from here. -->
     <Version>0.1.0</Version>
+    <!-- Keeps the version plain ("0.1.0") instead of adding "+<commit hash>". -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>Shottr</Product>
     <!-- WPF0001: ThemeMode (Fluent light/dark theme) is still flagged as experimental.
          WFO0003: WinForms (used only for the tray icon) prefers its own DPI setting, but this is a WPF app configured by app.manifest. -->

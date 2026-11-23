@@ -23,5 +23,6 @@
     <StreamGeometry x:Key="Icon.Region">M8,3 H5 A2,2 0 0 0 3,5 V8 M21,8 V5 A2,2 0 0 0 19,3 H16 M3,16 V19 A2,2 0 0 0 5,21 H8 M16,21 H19 A2,2 0 0 0 21,19 V16 M8,12 H16 M12,8 V16</StreamGeometry>
     <StreamGeometry x:Key="Icon.Window">M5,4 H19 A2,2 0 0 1 21,6 V18 A2,2 0 0 1 19,20 H5 A2,2 0 0 1 3,18 V6 A2,2 0 0 1 5,4 Z M3,9 H21</StreamGeometry>
     <StreamGeometry x:Key="Icon.Monitor">M4,3 H20 A2,2 0 0 1 22,5 V15 A2,2 0 0 1 20,17 H4 A2,2 0 0 1 2,15 V5 A2,2 0 0 1 4,3 Z M8,21 H16 M12,17 V21</StreamGeometry>
+    <StreamGeometry x:Key="Icon.Update">M21,12 A9,9 0 1 1 18.36,5.64 M21,3 V8 H16</StreamGeometry>
     <StreamGeometry x:Key="Icon.Exit">M9,21 H5 A2,2 0 0 1 3,19 V5 A2,2 0 0 1 5,3 H9 M16,17 L21,12 L16,7 M21,12 H9</StreamGeometry>
 </ResourceDictionary>

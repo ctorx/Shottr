@@ -6,6 +6,7 @@ using System.Windows.Interop;
 using Microsoft.Win32;
 using Shottr.Core;
 using Shottr.Interop;
+using Shottr.Update;
 
 namespace Shottr.Settings;
 
@@ -34,10 +35,15 @@ public partial class SettingsWindow : Window
         MagnifierCheck.IsChecked = s.ShowMagnifier;
         CloseAfterCopyCheck.IsChecked = s.CloseEditorAfterCopy;
         StartupCheck.IsChecked = AppSettings.StartWithWindows;
+        AutoUpdateCheck.IsChecked = s.CheckForUpdatesAutomatically;
+        VersionText.Text = $"You have Shottr {Updater.CurrentVersion}.";
+        CheckUpdatesButton.IsEnabled = !app.Updates.IsBusy;
+        app.Updates.BusyChanged += OnUpdatesBusyChanged;
         PrintScreenWarning.Visibility = AppSettings.WindowsUsesPrintScreen ? Visibility.Visible : Visibility.Collapsed;
 
         Closed += (_, _) =>
         {
+            _app.Updates.BusyChanged -= OnUpdatesBusyChanged;
             if (!_saved)
                 _app.RegisterHotkeys();
         };
@@ -123,6 +129,7 @@ public partial class SettingsWindow : Window
         s.FullScreen = FullScreenBox.SelectedIndex == 1 ? FullScreenMode.AllMonitors : FullScreenMode.MonitorUnderCursor;
         s.ShowMagnifier = MagnifierCheck.IsChecked == true;
         s.CloseEditorAfterCopy = CloseAfterCopyCheck.IsChecked == true;
+        s.CheckForUpdatesAutomatically = AutoUpdateCheck.IsChecked == true;
         try
         {
             AppSettings.StartWithWindows = StartupCheck.IsChecked == true;
@@ -147,4 +154,8 @@ public partial class SettingsWindow : Window
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e) => Close();
+
+    private void CheckUpdates_Click(object sender, RoutedEventArgs e) => _app.Updates.CheckNow();
+
+    private void OnUpdatesBusyChanged(object? sender, EventArgs e) => CheckUpdatesButton.IsEnabled = !_app.Updates.IsBusy;
 }

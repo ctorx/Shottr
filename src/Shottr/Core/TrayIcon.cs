@@ -19,6 +19,8 @@ internal sealed class TrayIcon : IDisposable
     private readonly MenuItem _regionItem;
     private readonly MenuItem _windowItem;
     private readonly MenuItem _fullItem;
+    private readonly MenuItem _updateItem;
+    private Action? _balloonClick;
 
     public TrayIcon(App app)
     {
@@ -34,12 +36,20 @@ internal sealed class TrayIcon : IDisposable
             if (e.Button is Forms.MouseButtons.Left or Forms.MouseButtons.Right)
                 ShowMenu();
         };
+        _icon.BalloonTipClicked += (_, _) =>
+        {
+            Action? click = _balloonClick;
+            _balloonClick = null;
+            click?.Invoke();
+        };
+        _icon.BalloonTipClosed += (_, _) => _balloonClick = null;
 
         _regionItem = Item("Capture region", "Icon.Region", () => CaptureDelayed(app, a => a.Capture.CaptureRegion()));
         // From the menu there is no meaningful "active window", so window capture uses the
         // region picker, where clicking a window captures it.
         _windowItem = Item("Capture window", "Icon.Window", () => CaptureDelayed(app, a => a.Capture.CaptureRegion()));
         _fullItem = Item("Capture full screen", "Icon.Monitor", () => CaptureDelayed(app, a => a.Capture.CaptureFullScreen()));
+        _updateItem = Item("Check for Updates…", "Icon.Update", () => app.Updates.CheckNow());
 
         _menu = new ContextMenu
         {
@@ -51,6 +61,7 @@ internal sealed class TrayIcon : IDisposable
                 _fullItem,
                 new Separator(),
                 Item("Open captures folder", "Icon.Folder", app.OpenCapturesFolder),
+                _updateItem,
                 Item("Settings", "Icon.Settings", app.ShowSettings),
                 new Separator(),
                 Item("Exit Shottr", "Icon.Exit", app.ExitApp),
@@ -82,9 +93,26 @@ internal sealed class TrayIcon : IDisposable
         _fullItem.InputGestureText = settings.FullScreenHotkey.IsEmpty ? "" : settings.FullScreenHotkey.ToString();
     }
 
-    public void ShowBalloon(string title, string text)
+    /// <summary>Shows a notification. When onClick is given, clicking the notification runs it.</summary>
+    public void ShowBalloon(string title, string text, Action? onClick = null)
     {
+        _balloonClick = onClick;
         _icon.ShowBalloonTip(6000, title, text, Forms.ToolTipIcon.None);
+    }
+
+    /// <summary>Disables the update command while a check or download is running.</summary>
+    public void SetUpdateBusy(bool busy)
+    {
+        _updateItem.IsEnabled = !busy;
+        _updateItem.Header = busy ? "Checking for updates…" : "Check for Updates…";
+    }
+
+    /// <summary>Replaces the icon's tooltip, such as with download progress. Null restores it.</summary>
+    public void SetStatusText(string? text)
+    {
+        // NotifyIcon tooltips are limited to 127 characters.
+        string t = text ?? "Shottr";
+        _icon.Text = t.Length > 127 ? t[..127] : t;
     }
 
     private void ShowMenu()
