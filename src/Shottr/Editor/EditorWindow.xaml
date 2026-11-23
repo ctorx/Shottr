@@ -15,7 +15,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- Header: edit actions on the left, file actions on the right. -->
+        <!-- Header: Copy and the edit actions on the left, save actions on the right. -->
         <Border Grid.Row="0" Padding="12,8" BorderThickness="0,0,0,1"
                 BorderBrush="{DynamicResource DividerStrokeColorDefaultBrush}">
             <DockPanel MinHeight="44">
@@ -32,15 +32,16 @@
                             <TextBlock Text="Save" Margin="8,0,2,0" VerticalAlignment="Center" FontSize="14" />
                         </StackPanel>
                     </Button>
-                    <Button Style="{StaticResource AccentCommandButton}" ToolTip="Copy to clipboard (Ctrl+C)" Click="Copy_Click" Margin="6,0,0,0">
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="pack://application:,,,/Assets/shottr.ico" Width="26" Height="26" Margin="6,0,14,0" />
+                    <!-- The right margin plus Undo's own 2 px matches the 14 px gap between the logo and Copy. -->
+                    <Button Style="{StaticResource AccentCommandButton}" ToolTip="Copy to clipboard (Ctrl+C)" Click="Copy_Click" Margin="0,0,12,0">
                         <StackPanel Orientation="Horizontal">
                             <c:Icon Data="{StaticResource Icon.Copy}" />
                             <TextBlock Text="Copy" Margin="8,0,2,0" VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" />
                         </StackPanel>
                     </Button>
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Image Source="pack://application:,,,/Assets/shottr.ico" Width="26" Height="26" Margin="6,0,14,0" />
                     <Button x:Name="UndoButton" Style="{StaticResource CommandButton}" ToolTip="Undo (Ctrl+Z)" Click="Undo_Click">
                         <c:Icon Data="{StaticResource Icon.Undo}" />
                     </Button>

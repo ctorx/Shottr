@@ -12,7 +12,7 @@
     <ApplicationIcon>Assets\shottr.ico</ApplicationIcon>
     <!-- The single source of Shottr's version. The exe's file version, the version shown in
          Settings, the update check and scripts/release.ps1 all read it from here. -->
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <!-- Keeps the version plain ("0.1.0") instead of adding "+<commit hash>". -->
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>Shottr</Product>

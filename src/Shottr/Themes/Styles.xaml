@@ -67,22 +67,28 @@
         </Setter>
     </Style>
 
+    <!-- Shottr's brand purple, taken from the app icon. The Copy button uses it instead of the
+         Windows accent color, because a grey or very light accent made Copy look disabled. -->
+    <SolidColorBrush x:Key="BrandFillBrush" Color="#8247F4" />
+    <SolidColorBrush x:Key="BrandFillHoverBrush" Color="#9260F6" />
+    <SolidColorBrush x:Key="BrandFillPressedBrush" Color="#6E36DE" />
+
     <!-- Highlighted primary action (Copy). -->
     <Style x:Key="AccentCommandButton" TargetType="Button" BasedOn="{StaticResource CommandButton}">
         <Setter Property="Padding" Value="14,0" />
-        <Setter Property="Foreground" Value="{DynamicResource TextOnAccentFillColorPrimaryBrush}" />
+        <Setter Property="Foreground" Value="White" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="Bd" Background="{DynamicResource AccentFillColorDefaultBrush}" CornerRadius="6" Padding="{TemplateBinding Padding}">
+                    <Border x:Name="Bd" Background="{StaticResource BrandFillBrush}" CornerRadius="6" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentFillColorSecondaryBrush}" />
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource BrandFillHoverBrush}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="True">
-                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentFillColorTertiaryBrush}" />
+                            <Setter TargetName="Bd" Property="Background" Value="{StaticResource BrandFillPressedBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
